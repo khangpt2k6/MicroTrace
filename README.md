@@ -25,6 +25,15 @@ sudo apt-get install -y systemtap systemtap-runtime
 git clone https://github.com/khangpt2k6/SimpleDTrace SimpleDTrace
 cd SimpleDTrace
 
+# Install python and virtual environment for Python
+sudo apt install python3-venv -y
+
+# Create the virtual environment 
+python3 -m venv venv
+
+# Activate the virtual environment 
+source venv/bin/activate
+
 # Install Python dependencies
 pip install -r requirements.txt
 
