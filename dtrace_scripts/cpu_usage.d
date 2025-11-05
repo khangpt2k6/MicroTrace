@@ -1,12 +1,4 @@
 #!/usr/bin/stap
-/*
- * cpu_usage.d - Monitor CPU usage and context switches
- * 
- * Usage:
- *   dtrace -s cpu_usage.d 2>/dev/null
- * 
- * Shows: Process scheduling, context switches, CPU time allocation
- */
 
 probe scheduler.cpu_off
 {
@@ -32,7 +24,7 @@ probe scheduler.wakeup
     }
 }
 
-END
+probe end
 {
     printf("\n=== CPU Scheduling Summary ===\n");
     printf("Analysis complete. Check events above for scheduling patterns.\n");

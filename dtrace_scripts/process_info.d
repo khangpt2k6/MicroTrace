@@ -1,12 +1,6 @@
 #!/usr/bin/stap
-/*
- * process_info.d - Track process activity and resource usage
- * 
- * Usage:
- *   dtrace -s process_info.d 2>/dev/null
- * 
- * Shows: Process lifecycle, thread activity, resource statistics
- */
+
+global total_syscalls
 
 probe process.create
 {
@@ -27,14 +21,14 @@ probe process.exit
 probe syscall.*.entry
 {
     if (pid() != 0 && (execname() == "python" || execname() == "python3")) {
-        @total_syscalls[execname()] <<< 1;
+        total_syscalls[execname()]++
     }
 }
 
 probe end
 {
     printf("\n=== Process Activity Summary ===\n");
-    foreach (proc in @total_syscalls) {
-        printf("%s: %d system calls\n", proc, @total_syscalls[proc]);
+    foreach (proc in total_syscalls) {
+        printf("%s: %d system calls\n", proc, total_syscalls[proc]);
     }
 }
