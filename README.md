@@ -29,8 +29,7 @@ cd SimpleDTrace
 pip install -r requirements.txt
 
 # Start the applications
-python3 app.py &
-python3 noise_generator.py &
+python3 app.py & python3 noise_generator.py &
 
 # Run SystemTap tracing
 sudo stap -v dtrace_scripts/syscalls.d
