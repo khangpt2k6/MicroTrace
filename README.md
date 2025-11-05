@@ -18,8 +18,7 @@ cd /app
 pip install -r requirements.txt
 
 # Start both apps in background
-python3 app.py &
-python3 noise_generator.py &
+python3 app.py & python3 noise_generator.py &
 
 # Run tracing
 stap -v dtrace_scripts/syscalls.d

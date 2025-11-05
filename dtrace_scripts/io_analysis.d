@@ -8,19 +8,22 @@
  * Shows: File I/O patterns, read/write operations
  */
 
-syscall:::entry
-/(execname == "python" || execname == "python3") && 
- (probefunc == "read" || probefunc == "write" || probefunc == "open" || probefunc == "close")/
+tracepoint:syscalls:sys_enter_read,
+tracepoint:syscalls:sys_enter_write,
+tracepoint:syscalls:sys_enter_open,
+tracepoint:syscalls:sys_enter_close,
+tracepoint:syscalls:sys_enter_openat
+/execname == "python" || execname == "python3"/
 {
     printf("[%Y] %s (PID:%d) -> %s()\n",
            walltimestamp, execname, pid, probefunc);
 }
 
-syscall:::return
-/(execname == "python" || execname == "python3") && 
- (probefunc == "read" || probefunc == "write")/
+tracepoint:syscalls:sys_exit_read,
+tracepoint:syscalls:sys_exit_write
+/execname == "python" || execname == "python3"/
 {
-    printf("       Result: %d bytes\n", arg0);
+    printf("       Result: %d bytes\n", arg1);
     @io[execname, probefunc] = count();
 }
 

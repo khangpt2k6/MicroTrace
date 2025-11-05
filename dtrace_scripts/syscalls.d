@@ -8,18 +8,16 @@
  * Shows: Syscall name, process name, execution time
  */
 
-syscall:::entry
+tracepoint:syscalls:sys_enter_*
 /execname == "python" || execname == "python3"/
 {
     @calls[execname, probefunc] = count();
-    @totaltime[execname, probefunc] = sum(arg0);
 }
 
-syscall:::return
+tracepoint:syscalls:sys_exit_*
 /execname == "python" || execname == "python3"/
 {
-    self->time = timestamp - self->start[probefunc];
-    @times[execname, probefunc] = avg(self->time);
+    @times[execname, probefunc] = count();
 }
 
 END
