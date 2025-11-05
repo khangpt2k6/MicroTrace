@@ -43,6 +43,16 @@ python3 app.py & python3 noise_generator.py &
 # Run SystemTap tracing
 sudo stap -v dtrace_scripts/syscalls.d
 ```
+<img width="1220" height="634" alt="image" src="https://github.com/user-attachments/assets/837bb916-3479-48f7-91b3-5ffd2ee84de2" />
+
+EValuate
+Script syntax and logic: ✅ fine
+
+SystemTap runtime & dev tools: ❌ version not fully compatible with kernel 6.14
+
+Kernel: ❌ too new for current SystemTap version
+
+Result: SystemTap cannot compile the module → script will not run
 
 ## CPU and Memory Limits (Optional)
 
