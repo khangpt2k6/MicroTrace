@@ -1,47 +1,75 @@
-# CPU Contention Analysis with DTrace - Quick Command Guide
+# CPU Contention Analysis with DTrace
 
-## DTrace/SystemTap Commands (Linux/macOS Only)
-#### Using Raw Ubuntu Container
+A project for analyzing CPU contention using DTrace/SystemTap on Linux systems.
+
+## Prerequisites
+
+- Linux system (Ubuntu 22.04 recommended)
+- SystemTap installed
+- Python 3.x
+- Git
+
+## Setup on Linux
+
+### Install SystemTap
 
 ```bash
-# Start Ubuntu container with privileged access
-docker run -it --privileged --cpus=0.5 -m 512m ubuntu:22.04 /bin/bash
+sudo apt-get update
+sudo apt-get install -y systemtap systemtap-runtime
+```
 
-# Inside container: install tools
-apt update && apt install -y python3 python3-pip systemtap curl git
+### Clone and Run
 
-# Copy project
+```bash
+# Clone the repository
 git clone https://github.com/khangpt2k6/SimpleDTrace SimpleDTrace
-cd SimpleDtrace
+cd SimpleDTrace
 
-# Install Python deps
+# Install Python dependencies
 pip install -r requirements.txt
 
-# Start both apps in background
+# Start the applications
 python3 app.py &
 python3 noise_generator.py &
 
-# Run tracing
-stap -v dtrace_scripts/syscalls.d
+# Run SystemTap tracing
+sudo stap -v dtrace_scripts/syscalls.d
 ```
-## Useful Docker Commands
+
+## CPU and Memory Limits (Optional)
+
+To simulate resource constraints, you can use cgroups or Docker:
 
 ```bash
-# View container logs
-docker logs -f <container_name>
+# Using Docker with resource limits
+docker run -it --privileged --cpus=0.5 -m 512m ubuntu:22.04 /bin/bash
+```
 
-# Execute command in container
-docker exec -it <container_name> bash
+## Monitoring Commands
 
-# List running containers
-docker ps
+```bash
+# View running processes
+ps aux | grep python3
 
-# Stop container
-docker stop <container_name>
+# Monitor CPU usage
+top -p $(pgrep -d',' -f 'python3')
 
-# Remove container
-docker rm <container_name>
+# Kill background processes
+pkill -f app.py
+pkill -f noise_generator.py
 
-# Remove image
-docker rmi dtrace-cpu-contention
+# View SystemTap output
+sudo stap -v dtrace_scripts/syscalls.d
+```
+
+## Troubleshooting
+
+If SystemTap fails to run:
+
+```bash
+# Install kernel debug symbols
+sudo apt-get install -y linux-headers-$(uname -r)
+
+# Verify SystemTap installation
+stap -V
 ```
