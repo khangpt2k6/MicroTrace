@@ -2,14 +2,14 @@
 
 global calls, times
 
-probe syscall.entry
+probe kernel.function("__x64_sys_*").call
 {
     if (execname() == "python" || execname() == "python3") {
         calls[execname(), probefunc()]++
     }
 }
 
-probe syscall.return
+probe kernel.function("__x64_sys_*").return
 {
     if (execname() == "python" || execname() == "python3") {
         times[execname(), probefunc()]++

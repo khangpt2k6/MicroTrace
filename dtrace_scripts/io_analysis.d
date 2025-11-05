@@ -2,11 +2,11 @@
 
 global io
 
-probe syscall.read.entry,
-      syscall.write.entry,
-      syscall.open.entry,
-      syscall.close.entry,
-      syscall.openat.entry
+probe kernel.function("__x64_sys_read").call,
+      kernel.function("__x64_sys_write").call,
+      kernel.function("__x64_sys_open").call,
+      kernel.function("__x64_sys_close").call,
+      kernel.function("__x64_sys_openat").call
 {
     if (execname() == "python" || execname() == "python3") {
         printf("[%s] %s (PID:%d) -> %s()\n",
@@ -14,11 +14,11 @@ probe syscall.read.entry,
     }
 }
 
-probe syscall.read.return,
-      syscall.write.return
+probe kernel.function("__x64_sys_read").return,
+      kernel.function("__x64_sys_write").return
 {
     if (execname() == "python" || execname() == "python3") {
-        printf("       Result: %d bytes\n", retval);
+        printf("       Result: %ld bytes\n", $return);
         io[execname(), probefunc()]++
     }
 }

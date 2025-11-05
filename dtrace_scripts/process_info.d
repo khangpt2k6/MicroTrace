@@ -2,7 +2,7 @@
 
 global total_syscalls
 
-probe process.create
+probe kernel.function("__x64_sys_execve").call
 {
     if (execname() == "python" || execname() == "python3") {
         printf("[%s] New process: %s (PID:%d, PPID:%d)\n",
@@ -10,7 +10,7 @@ probe process.create
     }
 }
 
-probe process.exit
+probe kernel.function("do_exit").call
 {
     if (execname() == "python" || execname() == "python3") {
         printf("[%s] Process exited: %s (PID:%d)\n",
@@ -18,7 +18,7 @@ probe process.exit
     }
 }
 
-probe syscall.entry
+probe kernel.function("__x64_sys_*").call
 {
     if (pid() != 0 && (execname() == "python" || execname() == "python3")) {
         total_syscalls[execname()]++

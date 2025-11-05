@@ -1,22 +1,14 @@
 #!/usr/bin/stap
 
-probe scheduler.cpu_off
+probe kernel.function("__schedule").call
 {
     if (execname() == "python" || execname() == "python3") {
-        printf("[%s] %s (PID:%d) off CPU\n",
+        printf("[%s] %s (PID:%d) context switch\n",
                ctime(gettimeofday_s()), execname(), pid());
     }
 }
 
-probe scheduler.cpu_on
-{
-    if (execname() == "python" || execname() == "python3") {
-        printf("[%s] %s (PID:%d) on CPU\n",
-               ctime(gettimeofday_s()), execname(), pid());
-    }
-}
-
-probe scheduler.wakeup
+probe kernel.function("try_to_wake_up").call
 {
     if (execname() == "python" || execname() == "python3") {
         printf("[%s] %s (PID:%d) woken up\n",
