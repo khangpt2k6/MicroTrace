@@ -4,9 +4,12 @@ import os
 
 app = Flask(__name__)
 
+# Configuration from environment variables
+FLASK_PORT = int(os.getenv('FLASK_PORT', 5000))
+FLASK_HOST = os.getenv('FLASK_HOST', '0.0.0.0')
+
 @app.route('/', methods=['GET'])
 def home():
-    """Simple health check endpoint"""
     return jsonify({
         'status': 'ok',
         'message': 'Web server is running',
@@ -16,7 +19,6 @@ def home():
 
 @app.route('/health', methods=['GET'])
 def health():
-    """Health check endpoint"""
     return jsonify({
         'healthy': True,
         'pid': os.getpid(),
@@ -25,17 +27,18 @@ def health():
 
 @app.route('/compute', methods=['GET'])
 def compute():
-    """Lightweight computation endpoint"""
+    start = time.time()
     result = sum(i for i in range(100000))
+    elapsed = time.time() - start
     return jsonify({
         'result': result,
+        'processing_time_ms': elapsed * 1000,
         'pid': os.getpid(),
         'timestamp': time.time()
     }), 200
 
 @app.route('/info', methods=['GET'])
 def info():
-    """Returns server info"""
     return jsonify({
         'app': 'Flask Web Server',
         'version': '1.0',
@@ -46,4 +49,5 @@ def info():
 
 if __name__ == '__main__':
     print(f"[Flask Server] Starting on PID: {os.getpid()}")
-    app.run(host='0.0.0.0', port=5000, debug=False, threaded=True)
+    print(f"[Flask Server] Listening on {FLASK_HOST}:{FLASK_PORT}")
+    app.run(host=FLASK_HOST, port=FLASK_PORT, debug=False, threaded=True)

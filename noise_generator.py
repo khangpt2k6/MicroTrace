@@ -15,12 +15,14 @@ def generate_noise():
             result += i
         
         elapsed = time.time() - start_time
+        cpu_time_per_sec = elapsed / 10.0  # Rough estimate per second during sleep
         
-        # Log activity
+        # Log activity with enhanced metrics
         timestamp = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
         print(f"[{timestamp}] Noise Generator (PID: {os.getpid()}) - "
               f"Iteration: {iteration}, Computed sum: {result}, "
-              f"Elapsed: {elapsed:.4f}s")
+              f"Elapsed: {elapsed:.4f}s | "
+              f"CPU load per sec: {cpu_time_per_sec:.4f}s")
         
         # Sleep for 10 seconds before next iteration
         time.sleep(10)
