@@ -18,7 +18,7 @@ probe process.exit
     }
 }
 
-probe syscall.*.entry
+probe syscall.entry
 {
     if (pid() != 0 && (execname() == "python" || execname() == "python3")) {
         total_syscalls[execname()]++

@@ -2,14 +2,14 @@
 
 global calls, times
 
-probe syscall.*.entry
+probe syscall.entry
 {
     if (execname() == "python" || execname() == "python3") {
         calls[execname(), probefunc()]++
     }
 }
 
-probe syscall.*.return
+probe syscall.return
 {
     if (execname() == "python" || execname() == "python3") {
         times[execname(), probefunc()]++
