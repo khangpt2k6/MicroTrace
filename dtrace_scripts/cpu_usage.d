@@ -1,4 +1,4 @@
-#!/usr/bin/dtrace -s
+#!/usr/bin/stap
 /*
  * cpu_usage.d - Monitor CPU usage and context switches
  * 

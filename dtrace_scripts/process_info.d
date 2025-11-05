@@ -1,4 +1,4 @@
-#!/usr/bin/dtrace -s
+#!/usr/bin/stap
 /*
  * process_info.d - Track process activity and resource usage
  * 
@@ -31,8 +31,10 @@ probe syscall.*.entry
     }
 }
 
-END
+probe end
 {
     printf("\n=== Process Activity Summary ===\n");
-    printa(@total_syscalls);
+    foreach (proc in @total_syscalls) {
+        printf("%s: %d system calls\n", proc, @total_syscalls[proc]);
+    }
 }

@@ -1,4 +1,4 @@
-#!/usr/bin/dtrace -s
+#!/usr/bin/stap
 /*
  * io_analysis.d - Monitor I/O operations and file access
  * 
@@ -29,8 +29,10 @@ probe syscall.read.return,
     }
 }
 
-END
+probe end
 {
     printf("\n=== I/O Operations Summary ===\n");
-    printa(@io);
+    foreach ([proc, func] in @io) {
+        printf("%s -> %s: %d operations\n", proc, func, @io[proc, func]);
+    }
 }

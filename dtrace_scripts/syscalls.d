@@ -1,4 +1,4 @@
-#!/usr/bin/dtrace -s
+#!/usr/bin/stap
 /*
  * syscalls.d - Track system calls from both Flask and Noise Generator processes
  * 
@@ -22,12 +22,15 @@ probe syscall.*.return
     }
 }
 
-END
+probe end
 {
     printf("\n=== System Calls Summary ===\n");
-    printf("Process: Function Count\n");
-    printa(@calls);
+    foreach ([proc, func] in @calls) {
+        printf("%s -> %s: %d\n", proc, func, @calls[proc, func]);
+    }
     
-    printf("\n=== Average Execution Time (ns) ===\n");
-    printa(@times);
+    printf("\n=== System Call Frequency ===\n");
+    foreach ([proc, func] in @times) {
+        printf("%s -> %s: %d calls\n", proc, func, @times[proc, func]);
+    }
 }
