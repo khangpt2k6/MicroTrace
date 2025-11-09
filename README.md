@@ -11,11 +11,11 @@ A project for analyzing CPU contention using DTrace/SystemTap on Linux systems.
 
 ## Setup on Linux
 
-### Install SystemTap
 
+### Install bpftrace
 ```bash
-sudo apt-get update
-sudo apt-get install -y systemtap systemtap-runtime
+sudo apt update
+sudo apt install -y bpftrace linux-headers-$(uname -r)
 ```
 
 ### Clone and Run
@@ -41,7 +41,7 @@ pip install -r requirements.txt
 python3 app.py & python3 noise_generator.py &
 
 # Run SystemTap tracing
-sudo stap -v dtrace_scripts/syscalls.d
+sudo bpftrace dtrace_scripts/syscalls.d
 ```
 <img width="1220" height="634" alt="image" src="https://github.com/user-attachments/assets/837bb916-3479-48f7-91b3-5ffd2ee84de2" />
 
@@ -79,50 +79,7 @@ pytest tests/test_app.py
 pytest -v
 ```
 
-## Monitoring Commands
-
-```bash
-# View running processes
-ps aux | grep python3
-
-# Monitor CPU usage
-top -p $(pgrep -d',' -f 'python3')
-
-# Kill background processes
-pkill -f app.py
-pkill -f noise_generator.py
-
-# View SystemTap output
-sudo stap -v dtrace_scripts/syscalls.d
-```
-
-## Troubleshooting
-
-If SystemTap fails to run:
-
-```bash
-# Install kernel debug symbols
-sudo apt-get install -y linux-headers-$(uname -r)
-
-# Verify SystemTap installation
-stap -V
-```
-
 ### Suggest solution for kernel
-
-**Key differences from SystemTap:**
-
-- Uses **tracepoint** directly (kernel tracepoints)  
-- Uses **comm** instead of `execname()`  
-- Uses **@ aggregations** like DTrace  
-- Much **faster to run** (no compilation needed)  
-
-**To test on your Ubuntu system:**
-
-```bash
-sudo apt install -y bpftrace
-sudo bpftrace dtrace_scripts/syscalls.d
-```
 
 **Try running one script first. If it works, you can run the others:**
 
