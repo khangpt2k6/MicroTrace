@@ -3,13 +3,13 @@
 tracepoint:raw_syscalls:sys_enter
 /comm == "python" || comm == "python3"/
 {
-    @calls[comm, syscall] = count();
+    @calls[comm, args->id] = count();
 }
 
 tracepoint:raw_syscalls:sys_exit
 /comm == "python" || comm == "python3"/
 {
-    @times[comm, syscall] = count();
+    @times[comm, args->id] = count();
 }
 
 END
